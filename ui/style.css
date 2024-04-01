@@ -1,0 +1,97 @@
+* {
+    font-family: 'Segoe UI';
+    font-size:1.125vh;
+    color: #fff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.tablet {
+    width: 60vh;
+    height: 40vh;
+    padding: 2vh;
+    background-color: #222;
+    border-radius: 2vh;
+    position: relative;
+}
+
+.sidebar {
+    width: 16vh;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.sidebar a {
+    background-color: #333;
+    color: black;
+    display: block;
+    padding: 1.2vh;
+}
+
+.sidebar * {
+    font-size: 1.5vh;
+}
+
+.sidebar a:hover {
+    background-color: #444;
+    cursor: pointer;
+}
+
+.sidebar a.active {
+    background-color: green;
+    color: #000;
+}
+
+.main {
+    margin-left: 16vh;
+}
+
+.vehicleList {
+    background-color: #333;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-auto-flow: column;
+    overflow: auto;
+    width: 44vh;
+    border-radius: 2vh;
+    padding-bottom: 1vh;
+}
+
+.vehicle {
+    border-radius: 2vh;
+    background-color: #444;
+    width: 20vh;
+    height: 8.25vh;
+    padding: 1.5vh;
+    margin: 1vh;
+    margin-right: 0%;
+    margin-bottom: 0%;
+}
+
+.vehicle .buttonBox {
+    margin-top: 1vh;
+    display: grid;
+    grid-template-columns: 9.5vh 9.5vh;
+    gap: 1vh;
+}
+
+.vehicle .buttonBox .button {
+    background-color: #555;
+    border-radius: .75vh;
+    padding: .5vh;
+    text-align: center;
+}
+
+.vehicle .buttonBox .button:hover {
+    cursor: pointer;
+    background-color: #666;
+}
