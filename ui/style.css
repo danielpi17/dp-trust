@@ -47,7 +47,7 @@ body {
 }
 
 .sidebar a.active {
-    background-color: green;
+    background-color: #549185;
     color: #000;
 }
 
