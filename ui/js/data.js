@@ -1,63 +1,9 @@
-currentPageName = "mypersonals"
-
-window.addEventListener("DOMContentLoaded", () => {
-    $("#home").hide()
-    $("#trustedpersonals").hide()
-    $("#adminpanel").hide()
-    $("#accesslist").hide()
-    setMyVehicles(["spanw", "cod", "scott", "dan", "garrett"])
-    setTrustedPersonals([["test", "2142595123129839", "MGR"],["test", "2142595123129839", "ADM"],["test", "2142595123129839", "USR"]])
-    setAccessList([["djisadojd", "USR"], ["sjaidhasiduw", "MGR"], ["sodohrwghhoq", "ONR"]])
-
-    document.getElementById("testbutton").addEventListener("click", () => {
-        // $("#test").hide()
-        fetch(`https://${GetParentResourceName()}/test`, {
-            method: "POST",
-            body: JSON.stringify({message: (document.getElementById("test").value)})
-        }).then(resp => resp.json()).then(resp => console.log(JSON.stringify(resp)))
-    })
-})
+adminAccess = false
 
 function registerData(data) {
-
-}
-function homePage() {
-    $(`#${currentPageName}`).hide()
-    $("#home").show()
-    currentPageName = "home"
-}
-function myPersonalsPage() {
-    $(`#${currentPageName}`).hide()
-    $("#mypersonals").show()
-    currentPageName = "mypersonals"
-}
-function trustedPersonalsPage() {
-    $(`#${currentPageName}`).hide()
-    $("#trustedpersonals").show()
-    currentPageName = "trustedpersonals"
-}
-function adminPanelPage() {
-    $(`#${currentPageName}`).hide()
-    $("#adminpanel").show()
-    currentPageName = "adminpanel"
-}
-function accessListPage(spawncode) {
-    $(`#${currentPageName}`).hide()
-    $("#accesslist").show()
-    currentPageName = "accesslist"
-    document.getElementById("accesslist-spawncode").textContent = spawncode
-}
-
-function addByDiscordID() {
-    console.log(document.getElementById("accesslist-spawncode").textContent)
-    console.log(document.getElementById("accesslist-discordid").value)
-}
-function addByID() {
-    console.log(document.getElementById("accesslist-spawncode").textContent)
-    console.log(document.getElementById("accesslist-ingameid").value)
-}
-function deletePersonal(personal) {
-    console.log(personal)
+    setMyVehicles(data["myvehicles"]);
+    setTrustedPersonals(data["trustedpersonals"])
+    isAdmin(data["admin"])
 }
 
 
@@ -113,7 +59,7 @@ function setAccessList(data) {
                     <a class="button" onclick="removeAccess('${data[sc][0]}')"><b>Remove Access</b></a>
                 </div>
             </div>`)
-        } else {
+        } else if(data[sc][1] === "USR") {
             $('#accesslist-vehicleList').append(`<div class="vehicle">
                 <b>Discord: </b><a>${data[sc][0]}</a>
                 <b>${data[sc][1]}</b>
@@ -126,13 +72,19 @@ function setAccessList(data) {
     }
 }
 
-function setRank(discordid, rank) {
-    console.log("Set rank on vehicle " + document.getElementById("accesslist-spawncode").textContent + " Discord ID: " + discordid + " Rank: " + rank)
+
+function isAdmin(value) {
+    // all html for admin panel should be under value in an append
+    adminAccess = value
+    if(value) {
+        $("#sidebar").append(`<a onclick="adminPanelPage()"><b>Admin Panel</b></a>`)
+        $("#sidebar-1").append(`<a onclick="adminPanelPage()"><b>Admin Panel</b></a>`)
+        $("#sidebar-2").append(`<a onclick="adminPanelPage()"><b>Admin Panel</b></a>`)
+        $("#sidebar-3").append(`<a onclick="adminPanelPage()" class="active"><b>Admin Panel</b></a>`)
+        $("#sidebar-4").append(`<a onclick="adminPanelPage()"><b>Admin Panel</b></a>`)
+    }
 }
 
-// setRank(discordid, rank) removeaccess(discordid)
 // make it so that admins can use the panel to type in a vehicle name and edit the owner, view access list, delete personal, take owner
 // admin panel can also type in the spawncode of a vehicle and a discord id to create a personal
-// make a function that determines if you can use admin panel
 // make functions refresh rest automatically
-// rank of ADM on vehicle does not show up in the list
