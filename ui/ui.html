@@ -9,7 +9,7 @@
         <div class="tablet">
             <div id="home">
                 <div class="sidebar" id="sidebar">
-                    <a onclick="homePage()" class="active"><b>Home</b></a>
+                    <a onclick="homePage()" class="active" style="border-top-left-radius: 2vh;"><b>Home</b></a>
                     <a onclick="myPersonalsPage()"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
                     <a onclick="adminPanelPage()"><b>Admin Panel</b></a>
@@ -20,7 +20,7 @@
             </div>
             <div id="mypersonals">
                 <div class="sidebar" id="sidebar">
-                    <a onclick="homePage()"><b>Home</b></a>
+                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
                     <a onclick="myPersonalsPage()" class="active"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
                     <a onclick="adminPanelPage()"><b>Admin Panel</b></a>
@@ -28,55 +28,95 @@
                 <div class="main">
                     <div class="vehicleList">
                         <div class="vehicle">
-                            <a><b>Spawncode: </b>spawncode</a>
+                            <a<b>Spawncode: </b>spawncode</a>
                             <div class="buttonBox">
-                                <a class="button"><b>Access List</b></a>
-                                <a class="button"><b>Add User</b></a>
-                                <a class="button"><b>Set Owner</b></a>
-                                <a class="button"><b>Delete Personal</b></a>
+                                <a class="button" onclick="accessListPage('spawncode')"><b>Access List</b></a>
+                                <a class="button" onclick="deletePersonal('spawncode')"><b>Delete Personal</b></a>
                             </div>
-                        </div>
-                        <div class="vehicle">
-                            Test
-                        </div>
-                        <div class="vehicle">
-                            Test
-                        </div>
-                        <div class="vehicle">
-                            Test
-                        </div>
-                        <div class="vehicle">
-                            Test
-                        </div>
-                        <div class="vehicle">
-                            Test
-                        </div>
-                        <div class="vehicle">
-                            Test
                         </div>
                     </div>
                 </div>
             </div>
             <div id="trustedpersonals">
                 <div class="sidebar" id="sidebar">
-                    <a onclick="homePage()"><b>Home</b></a>
+                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
                     <a onclick="myPersonalsPage()"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()" class="active"><b>Trusted Personals</b></a>
                     <a onclick="adminPanelPage()"><b>Admin Panel</b></a>
                 </div>
                 <div class="main">
-                    asdasjodi
+                    <div class="vehicleList">
+                        <div class="vehicle">
+                            <a><b>Spawncode: </b>spawncode</a>
+                            <div class="buttonBox">
+                                <a style="margin-bottom: 1vh;"><b>Owner: </b>2142595123129839 <b>MGR</b></a>
+                                <a class="button" onclick="accessListPage('spawncode')"><b>Access List</b></a>
+                            </div>
+                        </div>
+                        <div class="vehicle">
+                            <a><b>Spawncode: </b>spawncode</a>
+                            <div class="buttonBox">
+                                <a style="margin-bottom: 1vh;"><b>Owner: </b>2142595123129839 <b>USR</b></a>
+                                <a class="button" style="cursor: default"><b>Access List (You must be MGR)</b></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="adminpanel">
                 <div class="sidebar" id="sidebar">
-                    <a onclick="homePage()"><b>Home</b></a>
+                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
                     <a onclick="myPersonalsPage()"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
                     <a onclick="adminPanelPage()" class="active"><b>Admin Panel</b></a>
                 </div>
                 <div class="main">
                     asdasjodi
+                </div>
+            </div>
+            <div id="accesslist">
+                <div class="sidebar" id="sidebar">
+                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
+                    <a onclick="myPersonalsPage()"><b>My Personals</b></a>
+                    <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
+                    <a onclick="adminPanelPage()"><b>Admin Panel</b></a>
+                </div>
+                <div class="main">
+                    <div class="vehicleList">
+                        <div class="vehicle">
+                            <b>Spawncode: </b><a id="accesslist-spawncode"></a>
+                            <div class="buttonBox" style="grid-template-columns: auto 3vh;">
+                                <input style="background-color: #333;" type="text" id="accesslist-discordid" placeholder="Discord ID">
+                                <a class="button" onclick="addByDiscordID()"><b>+</b></a>
+                                <input style="background-color: #333;" type="text" id="accesslist-ingameid" placeholder="In Game ID">
+                                <a class="button" onclick="addByID()"><b>+</b></a>
+                            </div>
+                        </div>
+                        <div class="vehicle">
+                            <b>Discord: </b><a>970186089123946507</a>
+                            <b>ONR</b>
+                            <div class="buttonBox">
+                                <a class="button" style="cursor: default"><b>Cannot Demote ONR</b></a>
+                                <a class="button" style="cursor: default"><b>Cannot Remove ONR</b></a>
+                            </div>
+                        </div>
+                        <div class="vehicle">
+                            <b>Discord: </b><a>970186089123946507</a>
+                            <b>MGR</b>
+                            <div class="buttonBox">
+                                <a class="button"><b>Demote to USR</b></a>
+                                <a class="button"><b>Remove Access</b></a>
+                            </div>
+                        </div>
+                        <div class="vehicle">
+                            <b>Discord: </b><a>970186089123946507</a>
+                            <b>USR</b>
+                            <div class="buttonBox">
+                                <a class="button"><b>Promote to MGR</b></a>
+                                <a class="button"><b>Remove Access</b></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

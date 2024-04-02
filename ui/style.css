@@ -58,12 +58,13 @@ body {
 .vehicleList {
     background-color: #333;
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: repeat(3, calc(100%/3));
     grid-auto-flow: column;
     overflow: auto;
     width: 44vh;
     border-radius: 2vh;
     padding-bottom: 1vh;
+    height: 39vh;
 }
 
 .vehicle {
@@ -80,7 +81,7 @@ body {
 .vehicle .buttonBox {
     margin-top: 1vh;
     display: grid;
-    grid-template-columns: 9.5vh 9.5vh;
+    grid-template-columns: 20vh;
     gap: 1vh;
 }
 

@@ -4,6 +4,7 @@ window.addEventListener("DOMContentLoaded", () => {
     $("#home").hide()
     $("#trustedpersonals").hide()
     $("#adminpanel").hide()
+    $("#accesslist").hide()
     document.getElementById("testbutton").addEventListener("click", () => {
         // $("#test").hide()
         fetch(`https://${GetParentResourceName()}/test`, {
@@ -13,7 +14,9 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 })
 
+function registerData(data) {
 
+}
 function homePage() {
     $(`#${currentPageName}`).hide()
     $("#home").show()
@@ -33,4 +36,22 @@ function adminPanelPage() {
     $(`#${currentPageName}`).hide()
     $("#adminpanel").show()
     currentPageName = "adminpanel"
+}
+function accessListPage(spawncode) {
+    $(`#${currentPageName}`).hide()
+    $("#accesslist").show()
+    currentPageName = "accesslist"
+    document.getElementById("accesslist-spawncode").textContent = spawncode
+}
+
+function addByDiscordID() {
+    console.log(document.getElementById("accesslist-spawncode").textContent)
+    console.log(document.getElementById("accesslist-discordid").value)
+}
+function addByID() {
+    console.log(document.getElementById("accesslist-spawncode").textContent)
+    console.log(document.getElementById("accesslist-ingameid").value)
+}
+function deletePersonal(personal) {
+    console.log(personal)
 }
