@@ -57,7 +57,7 @@ function adminDeletePersonal() {
     spawncodeElement = document.getElementById("adminpanel-deletepersonalspawncode")
     spawncode = spawncodeElement.value
     spawncodeElement.value = ""
-    axios.post(`https://${GetParentResourceName()}/deletepersonal`, {spawncode:spawncode}).then(result => {})
+    axios.post(`https://${GetParentResourceName()}/deletepersonaladmin`, {spawncode:spawncode}).then(result => {})
 }
 function adminViewAccessList() {
     spawncodeElement = document.getElementById("adminpanel-viewaccesslistspawncode")
