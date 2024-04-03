@@ -5,7 +5,7 @@ This is a demonstration of an NUI script I wanted to make.
 - oxmysql (https://github.com/overextended/oxmysql)
 
 ### Commands
-/trust - Open the GUI
+/trust - Open the UI
 
 ### Keybinds
 The default keybind is F3 but it can be changed in config.lua
