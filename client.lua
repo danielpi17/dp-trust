@@ -1,5 +1,7 @@
 local isUiOpen = false
-cantUse = -- fix
+cantUse = {}
+accessListCallback = 0
+loadDataCallback = 0
 
 RegisterCommand(Config.command, function()
     if isUiOpen then
@@ -16,14 +18,16 @@ end)
 
 RegisterKeyMapping(Config.command, "Open Trust System", "keyboard", Config.keybind)
 
-RegisterNuiCallback("exit", function(data, cb)
-    isUiOpen = false
-    SetNuiFocus(false, false)
-    cb({})
+Citizen.CreateThread(function()
+    while true do
+        TriggerServerEvent("dptrust:vehiclespermittedserver")
+        Citizen.Wait(30000)
+    end
 end)
 
-accessListCallback = 0
-loadDataCallback = 0
+RegisterNetEvent("dptrust:vehiclespermitted", function(list)
+    cantUse = list
+end)
 
 RegisterNetEvent("dptrust:accesslistcallbackresponse", function(data)
     accessListCallback = data
@@ -31,6 +35,12 @@ end)
 
 RegisterNetEvent("dptrust:loaddatacallbackresponse", function(data)
     loadDataCallback = data
+end)
+
+RegisterNuiCallback("exit", function(data, cb)
+    isUiOpen = false
+    SetNuiFocus(false, false)
+    cb({})
 end)
 
 RegisterNuiCallback("accesslist", function(data, cb)
