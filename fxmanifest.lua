@@ -3,7 +3,7 @@ game "gta5"
 
 author "Daniel Pi"
 description "FiveM Personal System"
-version "1.0.0"
+version "0.1"
 
 shared_scripts {
     "config.lua"
