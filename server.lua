@@ -1,11 +1,21 @@
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_vehicles` (`spawncode` VARCHAR(255) NOT NULL , PRIMARY KEY (`spawncode`)) ENGINE = InnoDB;", {})
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_access` (`spawncode` VARCHAR(255) NOT NULL , `userid` VARCHAR(255) NOT NULL , `rank` VARCHAR(5) NOT NULL ) ENGINE = InnoDB;", {})
 
+function getUserDiscordId(src)
+    for k,v in pairs(GetPlayerIdentifiers(src)) do
+        if string.find(v, "^discord:") then
+            return string.gsub(v, "discord:", "")
+        end
+    end
+end
+
 RegisterServerEvent("dptrust:accesslistcallback", function()
     TriggerClientEvent("dptrust:accesslistcallbackresponse", source, {{"djisadojd", "USR"}, {"sjaidhasiduw", "MGR"}, {"sodohrwghhoq", "ONR"}})
 end)
 
 RegisterServerEvent("dptrust:loaddatacallback", function()
+    myvehicles = {}
+
     TriggerClientEvent("dptrust:loaddatacallbackresponse", source, {
         myvehicles = {"spanw", "cod", "scott", "dan", "garrett"},
         trustedpersonals = {{"test", "2142595123129839", "MGR"},{"test", "2142595123129839", "ADM"},{"test", "2142595123129839", "USR"}},
