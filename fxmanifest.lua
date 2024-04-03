@@ -5,6 +5,10 @@ author "Daniel Pi"
 description "FiveM Personal System"
 version "1.0.0"
 
+shared_scripts {
+    "config.lua"
+}
+
 client_scripts {
     "client.lua"
 }

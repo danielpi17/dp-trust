@@ -9,18 +9,69 @@ function getUserDiscordId(src)
     end
 end
 
-RegisterServerEvent("dptrust:accesslistcallback", function()
-    TriggerClientEvent("dptrust:accesslistcallbackresponse", source, {{"djisadojd", "USR"}, {"sjaidhasiduw", "MGR"}, {"sodohrwghhoq", "ONR"}})
+function getUserVehicleRank(spawncode, discordid)
+    MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE userid = @id AND spawncode = @spawncode", {"@id" = discordid, "@spawncode" = spawncode}, function(result)
+        if next(result) == nil then -- if not in 
+            return "N/A"
+        else
+            return result[0]["rank"]
+        end
+    end)
+end
+
+function userCanEditVehicle(spawncode, src)
+    if IsPlayerAceAllowed(src, Config.adminPermission) then
+        return true
+    else
+        rank = getUserVehicleRank(spawncode, getUserDiscordId(src))
+        if rank == "MGR" || rank == "ONR" then
+            return true
+        else
+            return false
+        end
+    end
+end
+
+RegisterServerEvent("dptrust:accesslistcallback", function(spawncode)
+    if userCanEditVehicle(spawncode, source) then
+        MySQL.Async.fetchall("SELECT * FROM `personal_access` WHERE spawncode = @spawncode", {"@spawncode" = spawncode}, function(result)
+            tempList = {}
+            for k,v in pairs(result) do
+                tempList.append({v["userid"], v["rank"]})
+            end
+            TriggerClientEvent("dptrust:accesslistcallbackresponse", source, templist)
+        end)
+    else
+        TriggerClientEvent("dptrust:accesslistcallbackresponse", source, {})
+    end
 end)
 
 RegisterServerEvent("dptrust:loaddatacallback", function()
-    myvehicles = {}
+    local src = source
+    MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE userid = @userid", {"@userid", getUserDiscordId(src)}, function(result)
+        myVehicles = {}
+        trustedPersonals = {}
+        admin = IsPlayerAceAllowed(src, Config.adminPermission)
+        for k, v in pairs(result) do
+            if v["rank"] == "ONR" then
+                myVehicles.append(v["spawncode"])
+            else
+                MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE spawncode = @spawncode AND rank = 'ONR'", {"@spawncode" = v["spawncode"]}, function(result2)
+                    if next(result2) == nil then
+                        trustedPersonals.append({v["spawncode"], "UNKOWN", v["rank"]})
+                    else
+                        trustedPersonals.append({v["spawncode"], result[0]["userid"], v["rank"]})
+                    end
+                end)
+            end
+        end
 
-    TriggerClientEvent("dptrust:loaddatacallbackresponse", source, {
-        myvehicles = {"spanw", "cod", "scott", "dan", "garrett"},
-        trustedpersonals = {{"test", "2142595123129839", "MGR"},{"test", "2142595123129839", "ADM"},{"test", "2142595123129839", "USR"}},
-        admin = true
-    })
+        TriggerClientEvent("dptrust:loaddatacallbackresponse", source, {
+            myvehicles = myVehicles,
+            trustedpersonals = trustedPersonals,
+            admin = admin
+        })
+    end)
 end)
 
 RegisterServerEvent("dptrust:addbydiscordid", function(data)

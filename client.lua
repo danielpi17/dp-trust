@@ -1,6 +1,6 @@
 local isUiOpen = false
 
-RegisterCommand("openui", function()
+RegisterCommand(Config.command, function()
     if isUiOpen then
         SetNuiFocus(false, false)
     else
@@ -13,7 +13,7 @@ RegisterCommand("openui", function()
     })
 end)
 
-RegisterKeyMapping("openui", "Open UI", "keyboard", "F3")
+RegisterKeyMapping(Config.command, "Open Trust System", "keyboard", Config.keybind)
 
 RegisterNuiCallback("exit", function(data, cb)
     isUiOpen = false
@@ -34,7 +34,7 @@ end)
 
 RegisterNuiCallback("accesslist", function(data, cb)
     accessListCallback = 0
-    TriggerServerEvent("dptrust:accesslistcallback")
+    TriggerServerEvent("dptrust:accesslistcallback", data[0]["spawncode"])
     repeat Citizen.Wait(0) until accessListCallback ~= 0
     cb(accessListCallback)
 end)
