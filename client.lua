@@ -1,4 +1,5 @@
 local isUiOpen = false
+cantUse = -- fix
 
 RegisterCommand(Config.command, function()
     if isUiOpen then
