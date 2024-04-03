@@ -7,24 +7,16 @@
         <script src="./js/data.js" type="text/javascript"></script>
         <script src="./js/updater.js" type="text/javascript"></script>
     	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     </head>
     <body>
-        <div class="tablet">
-            <div id="home">
-                <div class="sidebar" id="sidebar">
-                    <a onclick="homePage()" class="active" style="border-top-left-radius: 2vh;"><b>Home</b></a>
-                    <a onclick="myPersonalsPage()"><b>My Personals</b></a>
-                    <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
-                </div>
-                <div class="main">
-                    asdasjodi
-                </div>
-            </div>
+        <div class="tablet" id="tablet">
             <div id="mypersonals">
-                <div class="sidebar" id="sidebar-1">
-                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
-                    <a onclick="myPersonalsPage()" class="active"><b>My Personals</b></a>
+                <div class="sidebar">
+                    <a onclick="myPersonalsPage()" class="active" style="border-top-left-radius: 2vh;"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
+                    <div id="sidebar-1"></div>
+                    <a onclick="registerData()"><b>Refresh</b></a>
                 </div>
                 <div class="main">
                     <div class="vehicleList" id="mypersonals-vehicleList">
@@ -32,10 +24,11 @@
                 </div>
             </div>
             <div id="trustedpersonals">
-                <div class="sidebar" id="sidebar-2">
-                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
-                    <a onclick="myPersonalsPage()"><b>My Personals</b></a>
+                <div class="sidebar">
+                    <a onclick="myPersonalsPage()" style="border-top-left-radius: 2vh;"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()" class="active"><b>Trusted Personals</b></a>
+                    <div id="sidebar-2"></div>
+                    <a onclick="registerData()"><b>Refresh</b></a>
                 </div>
                 <div class="main">
                     <div class="vehicleList" id="trustedpersonals-vehicleList">
@@ -43,32 +36,26 @@
                 </div>
             </div>
             <div id="adminpanel">
-                <div class="sidebar" id="sidebar-3">
-                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
-                    <a onclick="myPersonalsPage()"><b>My Personals</b></a>
+                <div class="sidebar">
+                    <a onclick="myPersonalsPage()" style="border-top-left-radius: 2vh;"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
+                    <div id="sidebar-3"></div>
+                    <a onclick="registerData()"><b>Refresh</b></a>
                 </div>
                 <div class="main">
-                    saskdosad
+                    <div class="vehicleList" id="adminpanel-vehicleList">
+                    </div>
                 </div>
             </div>
             <div id="accesslist">
-                <div class="sidebar" id="sidebar-4">
-                    <a onclick="homePage()" style="border-top-left-radius: 2vh;"><b>Home</b></a>
-                    <a onclick="myPersonalsPage()"><b>My Personals</b></a>
+                <div class="sidebar">
+                    <a onclick="myPersonalsPage()" style="border-top-left-radius: 2vh;"><b>My Personals</b></a>
                     <a onclick="trustedPersonalsPage()"><b>Trusted Personals</b></a>
+                    <div id="sidebar-4"></div>
+                    <a onclick="registerData()"><b>Refresh</b></a>
                 </div>
                 <div class="main">
                     <div class="vehicleList" id="accesslist-vehicleList">
-                        <div class="vehicle">
-                            <b>Spawncode: </b><a id="accesslist-spawncode"></a>
-                            <div class="buttonBox" style="grid-template-columns: auto 3vh;">
-                                <input style="background-color: #333;" type="text" id="accesslist-discordid" placeholder="Discord ID">
-                                <a class="button" onclick="addByDiscordID()"><b>+</b></a>
-                                <input style="background-color: #333;" type="text" id="accesslist-ingameid" placeholder="In Game ID">
-                                <a class="button" onclick="addByID()"><b>+</b></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

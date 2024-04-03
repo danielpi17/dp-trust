@@ -2,7 +2,7 @@ fx_version "cerulean"
 game "gta5"
 
 author "Daniel Pi"
-description "Example resource"
+description "FiveM Personal System"
 version "1.0.0"
 
 client_scripts {
@@ -18,5 +18,8 @@ ui_page "ui/ui.html"
 files {
     "ui/ui.html",
     "ui/style.css",
-    "ui/script.js"
+    "ui/js/data.js",
+    "ui/js/events.js",
+    "ui/js/pages.js",
+    "ui/js/updater.js"
 }

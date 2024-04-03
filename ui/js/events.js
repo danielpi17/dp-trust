@@ -1,22 +1,26 @@
 // add messenger between lua and js
 
 window.addEventListener("DOMContentLoaded", () => {
-    $("#home").hide()
+    $("#tablet").hide()
     $("#trustedpersonals").hide()
     $("#adminpanel").hide()
     $("#accesslist").hide()
-    registerData({
-        "myvehicles": ["spanw", "cod", "scott", "dan", "garrett"],
-        "trustedpersonals": [["test", "2142595123129839", "MGR"],["test", "2142595123129839", "ADM"],["test", "2142595123129839", "USR"]],
-        "admin": true
-    })
-    setAccessList([["djisadojd", "USR"], ["sjaidhasiduw", "MGR"], ["sodohrwghhoq", "ONR"]])
+    registerData()
 
-    // document.getElementById("testbutton").addEventListener("click", () => {
-    //     // $("#test").hide()
-    //     fetch(`https://${GetParentResourceName()}/test`, {
-    //         method: "POST",
-    //         body: JSON.stringify({message: (document.getElementById("test").value)})
-    //     }).then(resp => resp.json()).then(resp => console.log(JSON.stringify(resp)))
-    // })
+    window.addEventListener("message", (event) => {
+        if(event.data.type === "visibility") {
+            registerData()
+            if(event.data.value) {
+                $("#tablet").show()
+            } else {
+                $("#tablet").hide()
+            }
+        }
+    })
+    document.onkeyup = (event) => {
+        if(event.which === 27) {
+            $("#tablet").hide()
+            axios.post(`https://${GetParentResourceName()}/exit`, {}).then(result => {})
+        }
+    }
 })
