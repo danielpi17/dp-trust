@@ -1,4 +1,4 @@
-# Untested: WILL BE TESTED TODAY
+# This script is still in beta and may contain bugs!
 
 # DanielPi Personal System
 This is a demonstration of an NUI script I wanted to make.
