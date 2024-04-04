@@ -25,6 +25,22 @@ Citizen.CreateThread(function()
     end
 end)
 
+Citizen.CreateThread(function()
+    while true do
+        for k,v in pairs(cantUse) do
+            if GetEntityModel(GetVehiclePedIsIn(PlayerPedId(), false)) == GetHashKey(v) then
+                if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then
+                    SetNotificationTextEntry("STRING")
+                    AddTextComponentString("~r~You can't drive this vehicle! Spawncode: "..v)
+                    DrawNotification(false, false)
+                    TaskLeaveVehicle(PlayerPedId(), GetVehiclePedIsIn(PlayerPedId(), false), 16)
+                end
+            end
+        end
+        Citizen.Wait(10)
+    end
+end)
+
 RegisterNetEvent("dptrust:vehiclespermitted", function(list)
     cantUse = list
 end)
@@ -45,8 +61,8 @@ end)
 
 RegisterNuiCallback("accesslist", function(data, cb)
     accessListCallback = 0
-    TriggerServerEvent("dptrust:accesslistcallback", data[0]["spawncode"])
-    repeat Citizen.Wait(0) until accessListCallback ~= 0
+    TriggerServerEvent("dptrust:accesslistcallback", data["spawncode"])
+    repeat Citizen.Wait(1) until accessListCallback ~= 0
     cb(accessListCallback)
 end)
 
