@@ -1,5 +1,4 @@
-
-<b style="color:red; font-size:25px">UNTESTED SCRIPT! USE AT YOUR OWN RISK!</b>
+# Untested: WILL BE TESTED TODAY
 
 # DanielPi Personal System
 This is a demonstration of an NUI script I wanted to make.
