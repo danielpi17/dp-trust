@@ -14,7 +14,7 @@ RegisterCommand(Config.command, function()
         type = "visibility",
         value = isUiOpen
     })
-end)
+end, false)
 
 RegisterKeyMapping(Config.command, "Open Trust System", "keyboard", Config.keybind)
 
