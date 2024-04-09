@@ -20,24 +20,23 @@ RegisterKeyMapping(Config.command, "Open Trust System", "keyboard", Config.keybi
 
 Citizen.CreateThread(function()
     while true do
-        TriggerServerEvent("dptrust:vehiclespermittedserver")
-        Citizen.Wait(30000)
+        cantUse = {}
+        Citizen.Wait(1000*60*Config.clientThreshold)
     end
 end)
 
 Citizen.CreateThread(function()
     while true do
-        spawncode = 0
-        if cantUse[spawncode] == nil then
-            vehicleAccess(spawncode)
-        elseif cantUse[spawncode] == 0 then
-            if GetEntityModel(GetVehiclePedIsIn(PlayerPedId(), false)) == GetHashKey(v) then
-                if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then
-                    SetNotificationTextEntry("STRING")
-                    AddTextComponentString("~r~You can't drive this vehicle! Spawncode: "..v)
-                    DrawNotification(false, false)
-                    TaskLeaveVehicle(PlayerPedId(), GetVehiclePedIsIn(PlayerPedId(), false), 16)
-                end
+        pedVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+        if GetPedInVehicleSeat(pedVehicle, -1) == PlayerPedId() then
+            spawncode = GetEntityModel(pedVehicle)
+            if cantUse[spawncode] == nil then
+                vehicleAccess(spawncode)
+            elseif cantUse[spawncode] == 0 then
+                SetNotificationTextEntry("STRING")
+                AddTextComponentString("~r~You can't drive this vehicle! Spawncode: "..spawncode)
+                DrawNotification(false, false)
+                TaskLeaveVehicle(PlayerPedId(), GetVehiclePedIsIn(PlayerPedId(), false), 16)
             end
         end
         Citizen.Wait(10)
@@ -58,11 +57,7 @@ RegisterNetEvent("dptrust:allowedtousecb", function(spawncode, allowed)
 end)
 
 RegisterNetEvent("dptrust:resetvehiclecache", function(spawncode)
-    cantUse[spawncode] = nil
-end)
-
-RegisterNetEvent("dptrust:vehiclespermitted", function(list)
-    cantUse = list
+    cantUse[GetHashKey(spawncode)] = nil
 end)
 
 RegisterNetEvent("dptrust:accesslistcallbackresponse", function(data)
