@@ -97,6 +97,7 @@ RegisterServerEvent("dptrust:loaddatacallback", function()
             repeat Citizen.Wait(0) until not paused
             if v["rank"] == "ONR" then
                 table.insert(myVehicles, v["spawncode"])
+                d:resolve()
             else
                 MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE spawncode = @spawncode AND rank = 'ONR'", {["@spawncode"] = v["spawncode"]}, function(result2)
                     if next(result2) == nil then
@@ -109,7 +110,7 @@ RegisterServerEvent("dptrust:loaddatacallback", function()
             end
             return d
         end
-        
+
         for k, v in pairs(result) do
             vehicleLoop(v):next()
         end
