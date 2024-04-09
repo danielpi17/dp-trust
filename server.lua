@@ -1,3 +1,5 @@
+local deferred = require('deferred')
+
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_vehicles` (`spawncode` VARCHAR(255) NOT NULL , PRIMARY KEY (`spawncode`)) ENGINE = InnoDB;", {})
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_access` (`spawncode` VARCHAR(255) NOT NULL , `userid` VARCHAR(255) NOT NULL , `rank` VARCHAR(5) NOT NULL ) ENGINE = InnoDB;", {})
 
@@ -89,24 +91,28 @@ RegisterServerEvent("dptrust:loaddatacallback", function()
         myVehicles = {}
         trustedPersonals = {}
         admin = IsPlayerAceAllowed(src, Config.adminPermission)
-        paused = false
-        for k, v in pairs(result) do
+
+        local function vehicleLoop(v)
+            local d = deferred.new()
             repeat Citizen.Wait(0) until not paused
             if v["rank"] == "ONR" then
                 table.insert(myVehicles, v["spawncode"])
             else
-                paused = true
                 MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE spawncode = @spawncode AND rank = 'ONR'", {["@spawncode"] = v["spawncode"]}, function(result2)
                     if next(result2) == nil then
                         table.insert(trustedPersonals, {v["spawncode"], "UNKOWN", v["rank"]})
                     else
                         table.insert(trustedPersonals, {v["spawncode"], result[1]["userid"], v["rank"]})
                     end
-                    paused = false
+                    d:resolve()
                 end)
             end
+            return d
         end
-        repeat Citizen.Wait(0) until not paused
+        
+        for k, v in pairs(result) do
+            vehicleLoop(v):next()
+        end
 
         TriggerClientEvent("dptrust:loaddatacallbackresponse", src, {
             myvehicles = myVehicles,
