@@ -20,29 +20,44 @@ RegisterKeyMapping(Config.command, "Open Trust System", "keyboard", Config.keybi
 
 Citizen.CreateThread(function()
     while true do
-        TriggerServerEvent("dptrust:vehiclespermittedserver")
-        Citizen.Wait(30000)
+        cantUse = {}
+        Citizen.Wait(1000*60*Config.clientThreshold)
     end
 end)
 
 Citizen.CreateThread(function()
     while true do
-        for k,v in pairs(cantUse) do
-            if GetEntityModel(GetVehiclePedIsIn(PlayerPedId(), false)) == GetHashKey(v) then
-                if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then
-                    SetNotificationTextEntry("STRING")
-                    AddTextComponentString("~r~You can't drive this vehicle! Spawncode: "..v)
-                    DrawNotification(false, false)
-                    TaskLeaveVehicle(PlayerPedId(), GetVehiclePedIsIn(PlayerPedId(), false), 16)
-                end
+        pedVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+        if GetPedInVehicleSeat(pedVehicle, -1) == PlayerPedId() then
+            spawncode = GetEntityModel(pedVehicle)
+            if cantUse[spawncode] == nil then
+                vehicleAccess(spawncode)
+            elseif cantUse[spawncode] == 0 then
+                SetNotificationTextEntry("STRING")
+                AddTextComponentString("~r~You can't drive this vehicle! Spawncode: "..spawncode)
+                DrawNotification(false, false)
+                TaskLeaveVehicle(PlayerPedId(), GetVehiclePedIsIn(PlayerPedId(), false), 16)
             end
         end
         Citizen.Wait(10)
     end
 end)
 
-RegisterNetEvent("dptrust:vehiclespermitted", function(list)
-    cantUse = list
+function vehicleAccess(spawncode)
+    cantUse[spawncode] = -1
+    TriggerServerEvent("dptrust:allowedtouse", spawncode)
+end
+
+RegisterNetEvent("dptrust:allowedtousecb", function(spawncode, allowed)
+    if allowed then
+        cantUse[spawncode] = 1
+    else
+        cantUse[spawncode] = 0
+    end
+end)
+
+RegisterNetEvent("dptrust:resetvehiclecache", function(spawncode)
+    cantUse[GetHashKey(spawncode)] = nil
 end)
 
 RegisterNetEvent("dptrust:accesslistcallbackresponse", function(data)
