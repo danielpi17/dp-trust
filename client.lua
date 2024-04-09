@@ -27,7 +27,10 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-        for k,v in pairs(cantUse) do
+        spawncode = 0
+        if cantUse[spawncode] == nil then
+            vehicleAccess(spawncode)
+        elseif cantUse[spawncode] == 0 then
             if GetEntityModel(GetVehiclePedIsIn(PlayerPedId(), false)) == GetHashKey(v) then
                 if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then
                     SetNotificationTextEntry("STRING")
@@ -39,6 +42,23 @@ Citizen.CreateThread(function()
         end
         Citizen.Wait(10)
     end
+end)
+
+function vehicleAccess(spawncode)
+    cantUse[spawncode] = -1
+    TriggerServerEvent("dptrust:allowedtouse", spawncode)
+end
+
+RegisterNetEvent("dptrust:allowedtousecb", function(spawncode, allowed)
+    if allowed then
+        cantUse[spawncode] = 1
+    else
+        cantUse[spawncode] = 0
+    end
+end)
+
+RegisterNetEvent("dptrust:resetvehiclecache", function(spawncode)
+    cantUse[spawncode] = nil
 end)
 
 RegisterNetEvent("dptrust:vehiclespermitted", function(list)

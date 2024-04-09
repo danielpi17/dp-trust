@@ -1,7 +1,70 @@
-local deferred = require('deferred')
+restrictedVehicles = {}
+
+-- refresh from time to time server and client
 
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_vehicles` (`spawncode` VARCHAR(255) NOT NULL , PRIMARY KEY (`spawncode`)) ENGINE = InnoDB;", {})
 MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `personal_access` (`spawncode` VARCHAR(255) NOT NULL , `userid` VARCHAR(255) NOT NULL , `rank` VARCHAR(5) NOT NULL ) ENGINE = InnoDB;", {})
+
+function registerVehicleOwner(spawncode)
+    MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE spawncode = @spawncode AND rank = 'ONR'", {["@spawncode"] = spawncode}, function(result2)
+        if next(result2) == nil then
+            restrictedVehicles[spawncode] = "N/A"
+        else
+            restrictedVehicles[spawncode] = result2[1]["userid"]
+        end
+        d:resolve()
+    end)
+end
+
+RegisterServerEvent("dptrust:allowedtouse", function(spawncode)
+    local src = source
+    if restrictedVehicles[spawncode] ~= nil then
+        discord = getUserDiscordId(src)
+        local function cb(rank)
+            if rank ~= "N/A" then
+                TriggerClientEvent("dptrust:allowedtousecb", src, spawncode, true)
+            else
+                TriggerClientEvent("dptrust:allowedtousecb", src, spawncode, false)
+            end
+        end
+        getUserVehicleRank(spawncode, discord, cb)
+    end
+end)
+
+MySQL.Async.fetchAll("SELECT * FROM `personal_vehicles`", {}, function(result)
+    for k,v in pairs(result) do
+        registerVehicleOwner(v["spawncode"])
+    end
+end)
+
+function addVehicleRestricted(spawncode)
+    registerVehicleOwner(spawncode)
+end
+
+function removeVehicleRestricted(spawncode)
+    if restrictedVehicles[spawncode] ~= nil then
+        restrictedVehicles[spawncode] = nil
+    end
+end
+
+function getInGameUserByDiscordId(id)
+    for a, g in pairs(GetPlayers()) do
+        for d, b in pairs(GetPlayerIdentifiers(g)) do
+            if string.find(b, "discord:") then
+                if string.gsub(b, "discord:", "") == id then
+                    return g
+                end
+            end
+        end
+    end
+    return 0
+end
+
+function uncacheUser(src, spawncode)
+    if src ~= 0 then
+        TriggerClientEvent("dptrust:resetvehiclecache", src, spawncode)
+    end
+end
 
 function getUserDiscordId(src)
     for k,v in pairs(GetPlayerIdentifiers(src)) do
@@ -92,27 +155,12 @@ RegisterServerEvent("dptrust:loaddatacallback", function()
         trustedPersonals = {}
         admin = IsPlayerAceAllowed(src, Config.adminPermission)
 
-        local function vehicleLoop(v)
-            local d = deferred.new()
-            repeat Citizen.Wait(0) until not paused
+        for k, v in pairs(result) do            
             if v["rank"] == "ONR" then
                 table.insert(myVehicles, v["spawncode"])
-                d:resolve()
             else
-                MySQL.Async.fetchAll("SELECT * FROM `personal_access` WHERE spawncode = @spawncode AND rank = 'ONR'", {["@spawncode"] = v["spawncode"]}, function(result2)
-                    if next(result2) == nil then
-                        table.insert(trustedPersonals, {v["spawncode"], "UNKOWN", v["rank"]})
-                    else
-                        table.insert(trustedPersonals, {v["spawncode"], result[1]["userid"], v["rank"]})
-                    end
-                    d:resolve()
-                end)
+                table.insert(trustedPersonals, {v["spawncode"], restrictedVehicles[v["spawncode"]], v["rank"]})
             end
-            return d
-        end
-
-        for k, v in pairs(result) do
-            vehicleLoop(v):next()
         end
 
         TriggerClientEvent("dptrust:loaddatacallbackresponse", src, {
@@ -132,6 +180,7 @@ RegisterServerEvent("dptrust:addbydiscordid", function(data)
             doesUserHaveAccessToVehicle(spawncode, discord, function(access)
                 if not access then
                     MySQL.Async.execute("INSERT INTO `personal_access` (spawncode, userid, rank) VALUES (@spawncode, @userid, 'USR')", {["@spawncode"] = spawncode, ["@userid"] = discord})
+                    uncacheUser(getInGameUserByDiscordId(discord), spawncode)
                 end
             end)
         end
@@ -146,6 +195,7 @@ RegisterServerEvent("dptrust:addbyid", function(data)
             doesUserHaveAccessToVehicle(spawncode, getUserDiscordId(id), function(access)
                 if not access then
                     MySQL.Async.execute("INSERT INTO `personal_access` (spawncode, userid, rank) VALUES (@spawncode, @userid, 'USR')", {["@spawncode"] = spawncode, ["@userid"] = getUserDiscordId(id)})
+                    uncacheUser(id, spawncode)
                 end
             end)
         end
@@ -159,6 +209,7 @@ RegisterServerEvent("dptrust:deletepersonal", function(data)
         if rank == "ONR" then
             MySQL.Async.execute("DELETE FROM `personal_access` WHERE spawncode = @spawncode", {["@spawncode"] = spawncode})
             MySQL.Async.execute("DELETE FROM `personal_vehicles` WHERE spawncode = @spawncode", {["@spawncode"] = spawncode})
+            removeVehicleRestricted(spawncode)
         end
     end)
 end)
@@ -187,6 +238,7 @@ RegisterServerEvent("dptrust:removeaccess", function(data)
             doesUserHaveAccessToVehicle(spawncode, discord, function(access)
                 if access then
                     MySQL.Async.execute("DELETE FROM `personal_access` WHERE spawncode = @spawncode AND userid = @userid", {["@spawncode"] = spawncode, ["@userid"] = discord})
+                    uncacheUser(getInGameUserByDiscordId(discord), spawncode)
                 end
             end)
         end
@@ -208,6 +260,7 @@ RegisterServerEvent("dptrust:createpersonalvehicle", function(data)
                     else
                         MySQL.Async.execute("INSERT INTO `personal_access` (spawncode, userid, rank) VALUES (@spawncode, @userid, 'ONR')", {["@spawncode"] = spawncode, ["@userid"] = discord})
                     end
+                    addVehicleRestricted(spawncode)
                 end)
             end
         end)
@@ -227,6 +280,8 @@ RegisterServerEvent("dptrust:setpersonalowner", function(data)
             else
                 MySQL.Async.execute("INSERT INTO `personal_access` (spawncode, userid, rank) VALUES (@spawncode, @userid, 'ONR')", {["@spawncode"] = spawncode, ["@userid"] = discord})
             end
+            registerVehicleOwner(spawncode)
+            uncacheUser(getInGameUserByDiscordId(discord), spawncode)
         end)
     end
 end)
@@ -238,6 +293,7 @@ RegisterServerEvent("dptrust:deletepersonaladmin", function(data)
     if IsPlayerAceAllowed(src, Config.adminPermission) then
         MySQL.Async.execute("DELETE FROM `personal_access` WHERE spawncode = @spawncode", {["@spawncode"] = spawncode})
         MySQL.Async.execute("DELETE FROM `personal_vehicles` WHERE spawncode = @spawncode", {["@spawncode"] = spawncode})
+        removeVehicleRestricted(spawncode)
     end
 end)
 
@@ -252,6 +308,7 @@ RegisterServerEvent("dptrust:gainadminaccess", function(data)
             else
                 MySQL.Async.execute("INSERT INTO `personal_access` (spawncode, userid, rank) VALUES (@spawncode, @userid, 'ADM')", {["@spawncode"] = spawncode, ["@userid"] = getUserDiscordId(src)})
             end
+            uncacheUser(src, spawncode)
         end)
     end
 end)
@@ -262,5 +319,6 @@ RegisterServerEvent("dptrust:loseadminaccess", function(data)
     
     if IsPlayerAceAllowed(src, Config.adminPermission) then
         MySQL.Async.execute("DELETE FROM `personal_access` WHERE spawncode = @spawncode AND userid = @userid", {["@spawncode"] = spawncode, ["@userid"] = getUserDiscordId(src)})
+        uncacheUser(src, spawncode)
     end
 end)
